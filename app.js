@@ -23,7 +23,14 @@ $(document).ready(function() {
 			callback(events);
 		},
 		dayRender: function(date, cell) {
-			cell.html('$100');
+			var first = $.fullCalendar.moment('2015-08-18');
+			var second = $.fullCalendar.moment('2015-08-23');
+			if (date.diff(first) < 0)
+				cell.html('<i>$100</i>');
+			else if (date.diff(second) < 0)
+				cell.html('<i>$9099</i>');
+			else
+				cell.html('<i>$6599</i>');
 		}
 	});
 });
