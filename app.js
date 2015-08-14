@@ -8,25 +8,21 @@ $(document).ready(function() {
 	$('#calendar').fullCalendar({
 		// put your options and callbacks here
 		events: function(start, end, timezone, callback) {
-			console.log(start);
-			console.log(end);
-			console.log(timezone);
 			var events = [
 				{
-					title  : 'event1',
-					start  : '2015-08-01'
+					title  : '$8999 - ML Trade',
+					start  : '2015-08-18',
+					backgroundColor: 'green'
 				},
 				{
-					title  : 'event2',
-					start  : '2015-08-05',
-					end    : '2015-08-07'
+					title  : '$2500 - Credit Card Payment',
+					start  : '2015-08-23',
+					backgroundColor: 'red'
 				}
 			];
 			callback(events);
 		},
 		dayRender: function(date, cell) {
-			console.log(date);
-			console.log(cell);
 			cell.html('$100');
 		}
 	});
