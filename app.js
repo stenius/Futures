@@ -23,8 +23,13 @@ $(document).ready(function() {
 				}
 			];
 			callback(events);
+		},
+		dayRender: function(date, cell) {
+			console.log(date);
+			console.log(cell);
+			cell.html('$100');
 		}
-		});
+	});
 });
 
 var db = new PouchDB('transactions', {adapter: 'websql'});
