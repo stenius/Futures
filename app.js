@@ -28,11 +28,18 @@ $(document).ready(function() {
 					console.log('y',doc);
 					start = new moment(doc['_id']).format("YYYY-MM-DD")
 					if (doc['amount'][0] == '-')
+					{
 						color = 'red';
+						title = '$' + doc['amount'].substr(1) + ' - ' + doc['name']
+					}
 					else
+					{
 						color = 'green';
+						title = '$' + doc['amount'] + ' - ' + doc['name']
+					}
+
 					myEvent = {
-						title  : '$8999 - ML Trade',
+						title  : title,
 						start  : start,
 						backgroundColor: color
 					}
