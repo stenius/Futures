@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "main": "main.js",
   "devDependencies": {
-    "bower": "^1.4.1",
     "electron-prebuilt": "^0.30.4",
     "fullcalendar": "^2.3.1",
     "jquery": "^2.1.4",

@@ -1,13 +1,51 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel='stylesheet' href='bower_components/fullcalendar/dist/fullcalendar.css' />
+		<link rel='stylesheet' href='node_modules/fullcalendar/dist/fullcalendar.css' />
 		<script>
 		</script>
 	</head>
   <body>
   <div id='calendar'></div>
-	<h1>Upcoming Transactions</h1>
+	<h1 class='app-title'>Upcoming Transactions</h1>
+	<script src="./node_modules/pouchdb/dist/pouchdb.js"></script>
+	<script src="./node_modules/moment/moment.js"></script>
 	<script src='./app.js'></script>
+	<script>
+		days = new PouchDB('days', {adapter: 'websql'});
+		events = new PouchDB('transactions', {adapter: 'websql'});
+		//repeating = new PouchDB('repeating', {adapter: 'websql'});
+
+		var deleteEvents = function(){
+			events.allDocs({include_docs: true}).then(function (result) {
+				for (row in result.rows){
+					doc = result.rows[row].doc;
+					events.remove(doc);
+				}
+			}).catch(function (err) {
+				console.log(err);
+			});
+		}
+		var printEvents = function(){
+				events.allDocs({include_docs: true}).then(function (result) {
+				for (row in result.rows){
+					doc = result.rows[row].doc;
+					console.log(doc);
+				}
+			}).catch(function (err) {
+				console.log(err);
+			});
+		}
+
+		var createEvents = function(){
+			d = moment();
+			d_id = d.format("YYYY/MM/DD HH:mm:ss");
+			events.put({
+				'_id': d_id,
+				'name': 'ML Trade',
+				'amount': '8999.00'
+			});
+		}
+	</script>
   </body>
 </html>
