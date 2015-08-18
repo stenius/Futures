@@ -4,6 +4,7 @@ var $ = require('jquery'),
 
 $(document).ready(function() {
 	// page is now ready, initialize the calendar...
+	var last_balance = 0;
 
 
 	$('#calendar').fullCalendar({
@@ -12,10 +13,13 @@ $(document).ready(function() {
 			var event_list = [
 			];
 
-			start_id = start.format("YYYY/MM/DD HH:mm:ss");
-			end_id = end.format("YYYY/MM/DD HH:mm:ss");
-			console.log(start_id);
-			console.log(end_id);
+			//get all the events that apply to the range then
+			var start2 = moment(start).subtract(1, 'days');
+			var end2 = moment(end).subtract(1, 'days');
+			// start.subtract(1, 'days');
+			// end.subtract(1, 'days');
+			var start_id = start2.format("YYYY/MM/DD HH:mm:ss");
+			var end_id = end2.format("YYYY/MM/DD HH:mm:ss");
 			events.allDocs({
 			  startkey     : start_id,
 			  endkey       : end_id,
@@ -24,9 +28,8 @@ $(document).ready(function() {
 			  // handle result
 				for (row in result.rows)
 				{
-					doc = result.rows[row].doc;
-					console.log('y',doc);
-					start = new moment(doc['_id']).format("YYYY-MM-DD")
+					var doc = result.rows[row].doc;
+					start_date = new moment(doc['_id']).format("YYYY-MM-DD")
 					if (doc['amount'][0] == '-')
 					{
 						color = 'red';
@@ -40,13 +43,71 @@ $(document).ready(function() {
 
 					myEvent = {
 						title  : title,
-						start  : start,
+						start  : start_date,
 						backgroundColor: color
 					}
 					$('#calendar').fullCalendar( 'renderEvent', myEvent );
 				}
-				console.log('result');
-				console.log(result);
+
+				//get all days in the range plus the first hidden day, if the count is less than the date range
+				var start2 = moment(start).subtract(1, 'days');
+				var end2 = moment(end).subtract(1, 'days');
+				start_id = start2.format("YYYY/MM/DD");
+				end_id = end2.format("YYYY/MM/DD");
+				console.log(start_id);
+				console.log(end_id);
+				days.allDocs({
+				  startkey     : start_id,
+				  endkey       : end_id,
+				  include_docs : true
+				}).then(function (result) {
+					if (result.rows.length == 43) //42 days displayed + 1 previous day
+					{
+						for (row in result.rows)
+						{
+							day_id = new moment(result.rows[row].doc['_id']).format("YYYY-MM-DD")
+							$("td.fc-day[data-date='"+day_id+"']").html('<i>$'+ result.rows[row].doc['balance'] + '</i>')
+						}
+					}
+					else
+					{
+						//find the last day and create documents for filler days use that balance
+						//take the events and then apply them to any days that have been created
+						//
+						//use bulkupdate to save the new documents
+						days.allDocs({
+							include_docs: true,
+							descending: true,
+							endkey: start_id,
+							limit: 1
+						}).then(function(row_result){
+							//if the range is 0, create the first day with a balance of zero
+							row_result = row_result.rows
+							if (row_result.length == 1)
+								//copy the balance over to the next created day
+								last_balance = row_result[0]['balance'];
+							else
+								last_balance = 0;
+						}).then(
+							events.allDocs(
+							{
+								include_docs: true,
+								startkey: start_id
+							}).then(function(eventresult){
+								console.log('searching for all events after ' + start_id + ' with a balance of ' + last_balance);
+								for (eventrow in eventresult.rows)
+									console.log(eventresult.rows[eventrow].doc)
+
+						}));
+
+						//add a document for the first day in the range
+					}
+
+					console.log(result);
+				}).catch(function (err) {
+					console.log('error');
+					console.log(err);
+				});
 			}).catch(function (err) {
 				console.log('error');
 				console.log(err);
@@ -55,24 +116,5 @@ $(document).ready(function() {
 
 			callback(event_list);
 		},
-		dayRender: function(date, cell) {
-
-			// days.get(date).then(function (doc) {
-			// 	cell.html('<i>$100</i>');
-			// }).catch(function(err){
-			// 	newDay = {'_id': date,
-			// 	// try to get the previous day if it exists and if it does take
-			// 	// its balance and add any events to it
-			// });
-
-		}
 	});
 });
-
-
-
-// check to see if there is a couchdb document with the date as the id
-	// if not create it and find the most recent day
-		// if there is no recent day, set the balance to 0
-		// find all non repeating events between the range and do the math to get the current day
-		// check all the repeating events to see if they apply and activate if so

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<title>Futures</title>
 		<link rel='stylesheet' href='node_modules/fullcalendar/dist/fullcalendar.css' />
 		<script>
 		</script>
@@ -46,6 +47,51 @@
 				'amount': '8999.00'
 			});
 		}
+
+		var printDays = function(){
+				days.allDocs({include_docs: true}).then(function (result) {
+				for (row in result.rows){
+					doc = result.rows[row].doc;
+					console.log(doc);
+				}
+			}).catch(function (err) {
+				console.log(err);
+			});
+		}
+		var deleteDays = function(){
+			days.allDocs({include_docs: true}).then(function (result) {
+				for (row in result.rows){
+					doc = result.rows[row].doc;
+					days.remove(doc);
+				}
+			}).catch(function (err) {
+				console.log(err);
+			});
+		}
 	</script>
+<!-- index.html -->
+<script>
+var remote = require('remote');
+var Menu = remote.require('menu');
+var template = [
+  {
+    label: 'File',
+    submenu: [
+      {
+        label: 'About Futures',
+        click: function() { remote.getCurrentWindow().toggleDevTools(); }
+      },
+      {
+        label: 'Exit',
+        selector: 'terminate:'
+      },
+    ]
+  }
+];
+
+menu = Menu.buildFromTemplate(template);
+
+Menu.setApplicationMenu(menu);
+</script>
   </body>
 </html>
