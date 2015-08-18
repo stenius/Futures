@@ -12,10 +12,14 @@ Installation
 ############
 
 `apt-get install nodejs`
+
 `npm install`
+
 `./node_modules/bin/electron .`
 
 License
 #######
+
 Futures is released under a dual GPLv3 and commercial license.  To inquire about a commercial license, please contact me.  All contributors will need to have a contributor agreement on file before any patches will be accepted.
+
 The Futures icon was made by Freepik (http://www.freepik.com) and is available from www.flaticon.com is licensed under CC BY 3.0
