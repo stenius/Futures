@@ -12,6 +12,7 @@ $(document).ready(function() {
 		events: function(start, end, timezone, callback) {
 			var event_list = [
 			];
+			console.log('rendering a new month: ');
 
 			//get all the events that apply to the range then
 			var start2 = moment(start).subtract(1, 'days');
@@ -25,6 +26,7 @@ $(document).ready(function() {
 			  endkey       : end_id,
 			  include_docs : true
 			}).then(function (result) {
+			console.log('there are '+ result.rows.length + ' events saved in this range');
 			  // handle result
 				for (row in result.rows)
 				{
@@ -61,6 +63,12 @@ $(document).ready(function() {
 				  endkey       : end_id,
 				  include_docs : true
 				}).then(function (result) {
+					console.log('there are '+ result.rows.length + ' days saved in this range');
+					for (day in result.rows)
+					{
+						console.log('day: ');
+						console.log(result.rows[day].doc)
+					}
 					if (result.rows.length == 43) //42 days displayed + 1 previous day
 					{
 						for (row in result.rows)
@@ -78,16 +86,23 @@ $(document).ready(function() {
 						days.allDocs({
 							include_docs: true,
 							descending: true,
-							endkey: start_id,
+							startkey: end_id,
 							limit: 1
 						}).then(function(row_result){
 							//if the range is 0, create the first day with a balance of zero
 							row_result = row_result.rows
 							if (row_result.length == 1)
+							{
+								console.log('last day saved: ');
+								console.log(row_result[0].doc)
 								//copy the balance over to the next created day
 								last_balance = row_result[0]['balance'];
+							}
 							else
+							{
 								last_balance = 0;
+								console.log('no last day saved.');
+							}
 						}).then(
 							events.allDocs(
 							{
