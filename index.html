@@ -13,8 +13,10 @@
 	<script src="./node_modules/moment/moment.js"></script>
 	<script src='./app.js'></script>
 	<script>
-		days = new PouchDB('days', {adapter: 'websql'});
-		events = new PouchDB('transactions', {adapter: 'websql'});
+		"use strict";
+		var last_balance;
+		var days = new PouchDB('days', {adapter: 'websql'});
+		var events = new PouchDB('transactions', {adapter: 'websql'});
 		//repeating = new PouchDB('repeating', {adapter: 'websql'});
 
 		var deleteEvents = function(){
