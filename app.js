@@ -2,6 +2,7 @@ var $ = require('jquery'),
 	moment = require('moment')
 	fullcalendar = require('fullcalendar')
 	require('moment-range')
+	decimal = require('decimal')
 
 
 $(document).ready(function() {
@@ -30,22 +31,22 @@ $(document).ready(function() {
 			}).then(function (result) {
 			console.log('there are '+ result.rows.length + ' events saved in this range');
 			  // handle result
-				for (row in result.rows)
+				for (var row in result.rows)
 				{
 					var doc = result.rows[row].doc;
-					start_date = new moment(doc['_id']).format("YYYY-MM-DD")
+					var start_date = new moment(doc['_id']).format("YYYY-MM-DD")
 					if (doc['amount'][0] == '-')
 					{
-						color = 'red';
-						title = '$' + doc['amount'].substr(1) + ' - ' + doc['name']
+						var color = 'red';
+						var title = '$' + doc['amount'].substr(1) + ' - ' + doc['name']
 					}
 					else
 					{
-						color = 'green';
-						title = '$' + doc['amount'] + ' - ' + doc['name']
+						var color = 'green';
+						var title = '$' + doc['amount'] + ' - ' + doc['name']
 					}
 
-					myEvent = {
+					var myEvent = {
 						title  : title,
 						start  : start_date,
 						backgroundColor: color
@@ -66,13 +67,13 @@ $(document).ready(function() {
 				  include_docs : true
 				}).then(function (result) {
 					console.log('there are '+ result.rows.length + ' days saved in this range');
-					for (day in result.rows)
+					for (var day in result.rows)
 					{
 						var day_id = moment(result.rows[day].doc['_id'])
 						day_id = day_id.format("YYYY/MM/DD");
 						console.log('day: ' + day_id);
 					}
-					if (result.rows.length == 43) //42 days displayed + 1 previous day
+					if (result.rows.length == 42 | result.rows.length == 43) //42 days displayed + 1 previous day
 					{
 						for (row in result.rows)
 						{
@@ -99,21 +100,21 @@ $(document).ready(function() {
 								console.log('last day saved: ');
 								console.log(row_result[0].doc)
 								//copy the balance over to the next created day
-								//last_balance = row_result[0]['balance'];
-								last_balance = 10;
+								last_balance = row_result[0]['balance'];
 								var first_day_to_create = row_result[0]['id'];
 							}
 							else
 							{
-								last_balance = 0;
-								var first_day_to_create = startkey;
+								last_balance = '0.00';
+								var first_day_to_create = start_id;
 								console.log('no last day saved.');
 							}
-							var day_objects = [];
+							var day_objects = {};
 
 							// need to skip the first day in the range since it is already in the db
 							var first_day = moment(first_day_to_create).add(1, 'days');
-							var new_day_range = moment.range(first_day, moment(end_id))
+							var end_day = moment(end_id)
+							var new_day_range = moment.range(first_day, end_day)
 							new_day_range.by('days', function(d){
 								var day_id = d.format("YYYY/MM/DD");
 								console.log('creating day for ' + day_id + '.');
@@ -121,26 +122,62 @@ $(document).ready(function() {
 									'_id': day_id,
 									'balance': last_balance
 								}
-								day_objects.push(new_day);
+								day_objects[day_id] = new_day;
 							});
 							var rtr_obj = {
 								'balance': last_balance,
-								'days': day_objects
+								'days': day_objects,
+								'first_day': first_day,
+								'end_day': end_day
 							}
 							return rtr_obj;
 						}).then(function(rtr_obj){
 							var balance = rtr_obj['balance'];
 							var day_objects = rtr_obj['days'];
+							var first_day = rtr_obj['first_day'];
+							var first_day_id = first_day.format("YYYY/MM/DD")
+							var end_day = rtr_obj['end_day'];
+							var end_day_id = end_day.format("YYYY/MM/DD")
 							console.log('day objects are');
 							console.log(day_objects);
+							var first_event_start_key = first_day_id + ' 00:00:00';
 							events.allDocs(
 							{
 								include_docs: true,
-								startkey: start_id
+								startkey: first_event_start_key,
 							}).then(function(eventresult){
-								console.log('searching for all events after ' + start_id + ' with a balance of ' + balance);
-								for (eventrow in eventresult.rows)
-									console.log(eventresult.rows[eventrow].doc)
+								console.log('searching for all events after ' + first_event_start_key + ' with a balance of ' + balance);
+								console.log(eventresult);
+
+								console.log('day objects are');
+								console.log(day_objects);
+
+								for (var eventrow in eventresult.rows)
+								{
+									var event_doc = eventresult.rows[eventrow].doc
+									console.log(event_doc['_id']);
+									//get day id for event and add to all subsequent days
+									//
+									// TODO: get date of event and change that to the beginning of the range
+									var first_day_after_event = moment(event_doc['_id'])
+									var last_day = end_day.add(1, 'days');
+									var new_day_range = moment.range(first_day_after_event, last_day)
+									new_day_range.by('days', function(d){
+										var day_id = d.format("YYYY/MM/DD");
+										// TODO: modify each of the days that come up after this even and add the sum to it
+										day_objects[day_id].balance = String(decimal(day_objects[day_id].balance).add(decimal(event_doc.amount)));
+										console.log(day_objects[day_id]);
+										console.log('adding balance to day ' + day_id);
+									});
+								}
+						}).then(function(){
+							// finally save the new days that were created to the db
+							var values = Object.keys(day_objects).map(function(key){
+								return day_objects[key];
+							});
+							console.log(values)
+							days.bulkDocs(values);
+							console.log('finished')
 						})});
 
 						//add a document for the first day in the range

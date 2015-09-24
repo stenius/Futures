@@ -31,8 +31,9 @@
 		}
 		var printEvents = function(){
 				events.allDocs({include_docs: true}).then(function (result) {
+				var row;
 				for (row in result.rows){
-					doc = result.rows[row].doc;
+					var doc = result.rows[row].doc;
 					console.log(doc);
 				}
 			}).catch(function (err) {
@@ -41,8 +42,8 @@
 		}
 
 		var createEvents = function(){
-			d = moment();
-			d_id = d.format("YYYY/MM/DD HH:mm:ss");
+			var d = moment();
+			var d_id = d.format("YYYY/MM/DD HH:mm:ss");
 			events.put({
 				'_id': d_id,
 				'name': 'ML Trade',
@@ -52,8 +53,9 @@
 
 		var printDays = function(){
 				days.allDocs({include_docs: true}).then(function (result) {
+				var row;
 				for (row in result.rows){
-					doc = result.rows[row].doc;
+					var doc = result.rows[row].doc;
 					console.log(doc);
 				}
 			}).catch(function (err) {
@@ -62,8 +64,8 @@
 		}
 		var deleteDays = function(){
 			days.allDocs({include_docs: true}).then(function (result) {
-				for (row in result.rows){
-					doc = result.rows[row].doc;
+				for (var row in result.rows){
+					var doc = result.rows[row].doc;
 					days.remove(doc);
 				}
 			}).catch(function (err) {
