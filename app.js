@@ -7,7 +7,6 @@ var $ = require('jquery'),
 
 $(document).ready(function() {
 	"use strict";
-	// page is now ready, initialize the calendar...
 
 
 	$('#calendar').fullCalendar({
@@ -101,13 +100,12 @@ $(document).ready(function() {
 						else
 						{
 							last_balance = '0.00';
-							var first_day = start_id;
+							var first_day = start;
 							console.log('no last day saved.');
 						}
 						var day_objects = {};
 
 						// need to skip the first day in the range since it is already in the db
-						//var first_day = moment(first_day_to_create).add(1, 'days');
 						var end_day = moment(end_id)
 						var new_day_range = moment.range(first_day, end_day)
 						new_day_range.by('days', function(d){
