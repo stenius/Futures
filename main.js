@@ -23,6 +23,7 @@ app.on('window-all-closed', function() {
 app.on('ready', function() {
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 800, height: 900, icon: 'stats100.png'});
+  //mainWindow = new BrowserWindow({width: 570, height: 477, icon: 'stats100.png'});
   var appIcon = new Tray('stats100.png');
   appIcon.setTitle('Futures');
 
