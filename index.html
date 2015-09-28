@@ -21,8 +21,8 @@
 
 		var deleteEvents = function(){
 			events.allDocs({include_docs: true}).then(function (result) {
-				for (row in result.rows){
-					doc = result.rows[row].doc;
+				for (var row in result.rows){
+					var doc = result.rows[row].doc;
 					events.remove(doc);
 				}
 			}).catch(function (err) {

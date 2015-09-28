@@ -16,6 +16,8 @@ $(document).ready(function() {
 			var event_list = [
 			];
 			console.log('rendering a new month: ');
+			console.log('first moment is')
+			console.log(start)
 
 			//get all the events that apply to the range then
 			var start2 = moment(start).subtract(1, 'days');
@@ -100,7 +102,7 @@ $(document).ready(function() {
 								console.log('last day saved: ');
 								console.log(row_result[0].doc)
 								//copy the balance over to the next created day
-								last_balance = row_result[0]['balance'];
+								last_balance = row_result[0].doc['balance'];
 								var first_day_to_create = row_result[0]['id'];
 							}
 							else
