@@ -16,6 +16,7 @@
 		var last_balance;
 		var days = new PouchDB('days', {adapter: 'websql'});
 		var events = new PouchDB('transactions', {adapter: 'websql'});
+		var events2 = new PouchDB('events2', {adapter: 'websql'});
 		//repeating = new PouchDB('repeating', {adapter: 'websql'});
 
 		var deleteEvents = function(){
@@ -39,11 +40,32 @@
 				console.log(err);
 			});
 		}
+		var printEvents2 = function(){
+				events2.allDocs({include_docs: true}).then(function (result) {
+				var row;
+				for (row in result.rows){
+					var doc = result.rows[row].doc;
+					console.log(doc);
+				}
+			}).catch(function (err) {
+				console.log(err);
+			});
+		}
 
 		var createEvents = function(){
 			var d = moment();
 			var d_id = d.format("YYYY/MM/DD HH:mm:ss");
 			events.put({
+				'_id': d_id,
+				'name': 'ML Trade',
+				'amount': '8999.00'
+			});
+		}
+
+		var createEvents2 = function(){
+			var d = moment();
+			var d_id = d.format("YYYY/MM/DD HH:mm:ss");
+			events2.put({
 				'_id': d_id,
 				'name': 'ML Trade',
 				'amount': '8999.00'

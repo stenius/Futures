@@ -8,9 +8,45 @@ var $ = require('jquery'),
 $(document).ready(function() {
 	"use strict";
 
+	// as events come in from a remote source update the balances and displayed days
+	var rep = events.replicate.from(events2, {
+	  live: true,
+	  retry: true
+	}).on('change', function (info) {
+		console.log(info);
+	  // TODO: increase the balance for all days found after this event
+	}).on('paused', function () {
+	  // replication paused (e.g. user went offline)
+		console.log('paused');
+	}).on('active', function () {
+		console.log('active');
+	  // replicate resumed (e.g. user went back online)
+	}).on('denied', function (info) {
+		console.log(info);
+	  // a document failed to replicate, e.g. due to permissions
+	}).on('complete', function (info) {
+		console.log(info);
+	  // handle complete
+	}).on('error', function (err) {
+		console.log(err);
+	  // handle error
+	});
+
 
 	$('#calendar').fullCalendar({
-		// put your options and callbacks here
+		customButtons: {
+			settingsButton: {
+				text: 'Settings',
+				click: function() {
+					alert('clicked the settings button!');
+				}
+			}
+		},
+		header: {
+			right: 'settingsButton today prev,next',
+		},
+
+		// find or create day objects in db as days are displayed
 		events: function(start, end, timezone, callback) {
 			var event_list = [
 			];
@@ -83,6 +119,8 @@ $(document).ready(function() {
 						startkey: end_id,
 						limit: 1
 					}).then(function(row_result){
+						// TODO: check to see if the last day saved in the db occurs after the current date range, if so, just set all of the values to 0
+
 						//if the range is 0, create the first day with a balance of zero
 						row_result = row_result.rows
 						if (row_result.length == 1)
