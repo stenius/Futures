@@ -112,8 +112,6 @@ $(document).ready(function() {
 				}
 
 				//get all days in the range plus the first hidden day, if the count is less than the date range
-				//var start2 = moment(start).subtract(1, 'days');
-				var end2 = moment(end).subtract(1, 'days');
 				start_id = start.format("YYYY/MM/DD");
 				end_id = end2.format("YYYY/MM/DD");
 				console.log('starting at ' + start_id);
@@ -163,8 +161,7 @@ $(document).ready(function() {
 						}
 						var day_objects = {};
 
-						// need to skip the first day in the range since it is already in the db
-						var end_day = moment(end_id).add(0, 'days');
+						var end_day = moment(end_id)
 						var new_day_range = moment.range(first_day, end_day)
 						new_day_range.by('days', function(d){
 							var day_id = d.format("YYYY/MM/DD");
