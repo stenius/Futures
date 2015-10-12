@@ -14,6 +14,8 @@ $(document).ready(function() {
 	  retry: true
 	}).on('change', function (info) {
 		console.log(info);
+		// TODO: check to make sure that it is a object being added and not deleted
+		addTransactions(info.docs)
 	  // TODO: increase the balance for all days found after this event
 	}).on('paused', function () {
 	  // replication paused (e.g. user went offline)
@@ -32,6 +34,25 @@ $(document).ready(function() {
 	  // handle error
 	});
 
+	var addTransactions = function(transactions) {
+		for (var row in transactions)
+		{
+			console.log('adding transaction')
+			console.log(transactions[row])
+
+			// increase the balance of all days, and save them
+
+			// days.allDocs(
+			// {
+			// 	include_docs: true,
+			// 	startkey: first_event_start_key,
+			// }).then(function(eventresult){
+			// })
+			// if a day is currently being displayed, update the balance of it
+		}
+
+	}
+
 
 	$('#calendar').fullCalendar({
 		customButtons: {
@@ -43,7 +64,8 @@ $(document).ready(function() {
 			}
 		},
 		header: {
-			right: 'settingsButton today prev,next',
+			left: 'title settingsButton',
+			right: 'today prev,next',
 		},
 
 		// find or create day objects in db as days are displayed
@@ -57,8 +79,6 @@ $(document).ready(function() {
 			//get all the events that apply to the range then
 			var start2 = moment(start).subtract(1, 'days');
 			var end2 = moment(end).subtract(1, 'days');
-			// start.subtract(1, 'days');
-			// end.subtract(1, 'days');
 			var start_id = start2.format("YYYY/MM/DD HH:mm:ss");
 			var end_id = end2.format("YYYY/MM/DD HH:mm:ss");
 			events.allDocs({
@@ -144,7 +164,7 @@ $(document).ready(function() {
 						var day_objects = {};
 
 						// need to skip the first day in the range since it is already in the db
-						var end_day = moment(end_id)
+						var end_day = moment(end_id).add(0, 'days');
 						var new_day_range = moment.range(first_day, end_day)
 						new_day_range.by('days', function(d){
 							var day_id = d.format("YYYY/MM/DD");
@@ -179,17 +199,20 @@ $(document).ready(function() {
 								var event_doc = eventresult.rows[eventrow].doc
 								//get day id for event and add to all subsequent days
 								var first_day_after_event = moment(event_doc['_id'])
-								var last_day = end_day.add(1, 'days');
+								var last_day = moment(end_day).add(1, 'days');
 								var new_day_range = moment.range(first_day_after_event, last_day)
 								new_day_range.by('days', function(d){
 									var day_id = d.format("YYYY/MM/DD");
-									day_objects[day_id].balance = String(decimal(day_objects[day_id].balance).add(decimal(event_doc.amount)));
+									console.log(day_id)
+									console.log(day_objects[day_id])
+									day_objects[day_id]['balance'] = String(decimal(day_objects[day_id]['balance']).add(decimal(event_doc.amount)));
 								});
 							}
-					}).then(function(){
+							return day_objects;
+					}).then(function(day_obj){
 						// finally save the new days that were created to the db
-						var values = Object.keys(day_objects).map(function(key){
-							return day_objects[key];
+						var values = Object.keys(day_obj).map(function(key){
+							return day_obj[key];
 						});
 						days.bulkDocs(values);
 
