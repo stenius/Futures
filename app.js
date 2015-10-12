@@ -203,30 +203,29 @@ $(document).ready(function() {
 								var new_day_range = moment.range(first_day_after_event, last_day)
 								new_day_range.by('days', function(d){
 									var day_id = d.format("YYYY/MM/DD");
-									console.log(day_id)
-									console.log(day_objects[day_id])
 									day_objects[day_id]['balance'] = String(decimal(day_objects[day_id]['balance']).add(decimal(event_doc.amount)));
 								});
 							}
 							return day_objects;
-					}).then(function(day_obj){
-						// finally save the new days that were created to the db
-						var values = Object.keys(day_obj).map(function(key){
-							return day_obj[key];
-						});
-						days.bulkDocs(values);
+						}).then(function(day_obj){
+							// finally save the new days that were created to the db
+							var values = Object.keys(day_obj).map(function(key){
+								return day_obj[key];
+							});
+							days.bulkDocs(values);
 
-						//iterate over the new days created and display them on the calendar
-						for (var day in values)
-						{
-							var day_id = values[day]['_id'];
-							var re = new RegExp('/', 'g');
-							day_id = day_id.replace(re, '-')
-							var day_balance = values[day]['balance'];
-							console.log('creating ' + day_id + ' with a balance of $' + day_balance);
-							$("td.fc-day[data-date='"+day_id+"']").html('<i>$'+ day_balance + '</i>');
-						}
-					})});
+							//iterate over the new days created and display them on the calendar
+							for (var day in values)
+							{
+								var day_id = values[day]['_id'];
+								var re = new RegExp('/', 'g');
+								day_id = day_id.replace(re, '-')
+								var day_balance = values[day]['balance'];
+								console.log('creating ' + day_id + ' with a balance of $' + day_balance);
+								$("td.fc-day[data-date='"+day_id+"']").html('<i>$'+ day_balance + '</i>');
+							}
+						})
+					});
 				}).catch(function (err) {
 					console.log('error');
 					console.log(err);
