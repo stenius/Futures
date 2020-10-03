@@ -8,7 +8,7 @@
     "jquery": "^2.1.4",
     "moment": "^2.10.6",
     "moment-range": "^2.0.3",
-    "pouchdb": "^4.0.0"
+    "pouchdb": "^7.2.2"
   },
   "dependencies": {
     "decimal": "0.0.2"
