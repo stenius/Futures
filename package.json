@@ -5,7 +5,7 @@
   "devDependencies": {
     "electron-prebuilt": "^0.30.4",
     "fullcalendar": "^2.4.0",
-    "jquery": "^2.1.4",
+    "jquery": "^3.5.1",
     "moment": "^2.10.6",
     "moment-range": "^2.0.3",
     "pouchdb": "^4.0.0"
