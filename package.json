@@ -1,16 +1,11 @@
 {
   "name": "futures",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "main": "main.js",
-  "devDependencies": {
-    "electron-prebuilt": "^0.30.4",
-    "fullcalendar": "^2.4.0",
-    "jquery": "^2.1.4",
-    "moment": "^2.10.6",
-    "moment-range": "^2.0.3",
-    "pouchdb": "^4.0.0"
+  "scripts": {
+    "start": "electron ."
   },
-  "dependencies": {
-    "decimal": "0.0.2"
+  "devDependencies": {
+    "electron": "^10.1.5"
   }
 }

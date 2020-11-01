@@ -1,95 +1,43 @@
-var app = require('app');  // Module to control application life.
-var BrowserWindow = require('browser-window');  // Module to create native browser window.
-var Tray = require('tray');  // Module to create native browser window.
-var Menu = require('menu');
+// Modules to control application life and create native browser window
+const {app, BrowserWindow} = require('electron')
+const path = require('path')
 
-// Report crashes to our server.
-require('crash-reporter').start();
+function createWindow () {
+  // Create the browser window.
+  const mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js')
+    }
+  })
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is GCed.
-var mainWindow = null;
-var appIcon = null;
+  // and load the index.html of the app.
+  mainWindow.loadFile('index.html')
 
-// Quit when all windows are closed.
-app.on('window-all-closed', function() {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform != 'darwin') {
-    app.quit();
-  }
-});
-
-var logToBrowser = function() {
-if (mainWindow && mainWindow !== null) {
-var baseArgs = ['console.log']
-mainWindow.webContents.send.apply(mainWindow.webContents, baseArgs.concat([].slice.call(arguments)))
-}
+  // Open the DevTools.
+  // mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
-app.on('ready', function() {
-  // Create the browser window.
-  //mainWindow = new BrowserWindow({width: 800, height: 900, icon: 'stats100.png'});
-  mainWindow = new BrowserWindow({
-    width: 800,
-    // height: 650,
-    height: 900,
-    icon: 'stats100.png',
-	center: true,
-	'skip-taskbar': true,
-	frame: false,
-	show: false
-  });
-  appIcon = new Tray('stats100.png');
-  appIcon.setTitle('Futures');
-  //var contextMenu = new Menu();
-  //contextMenu.append(new MenuItem({ label: 'MenuItem1', click: function() { console.log('item 1 clicked'); } }));
-
-  var contextMenu = Menu.buildFromTemplate([
-    { label: 'Show/Hide Venmo',
-      //type: 'radio',
-      click: function(){
-		if (mainWindow.isVisible()) {
-		  mainWindow.hide()
-		} else {
-		  //mainWindow.setPosition(parseInt(bounds.x + (bounds.width / 2) - 400), bounds.y + bounds.height)
-		  mainWindow.show()
-		}
-      }
-    },
-  ]);
-  //appIcon.setToolTip('This is my application.');
-  appIcon.setContextMenu(contextMenu);
-
-  appIcon.on('clicked', function(e, bounds) {
-    logToBrowser('app icon clicked', e)
-    logToBrowser('app icon clicked', bounds)
-    console.log(bounds)
-    if (mainWindow.isVisible()) {
-      mainWindow.hide()
-    } else {
-      mainWindow.setPosition(parseInt(bounds.x + (bounds.width / 2) - 400), bounds.y + bounds.height)
-      mainWindow.show()
-    }
+// Some APIs can only be used after this event occurs.
+app.whenReady().then(() => {
+  createWindow()
+  
+  app.on('activate', function () {
+    // On macOS it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+})
 
+// Quit when all windows are closed, except on macOS. There, it's common
+// for applications and their menu bar to stay active until the user quits
+// explicitly with Cmd + Q.
+app.on('window-all-closed', function () {
+  if (process.platform !== 'darwin') app.quit()
+})
 
-
-
-
-  // and load the index.html of the app.
-  mainWindow.loadUrl('file://' + __dirname + '/index.html');
-
-  // Open the devtools.
-  mainWindow.openDevTools();
-
-  // Emitted when the window is closed.
-  mainWindow.on('closed', function() {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null;
-  });
-});
+// In this file you can include the rest of your app's specific main process
+// code. You can also put them in separate files and require them here.
