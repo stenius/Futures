@@ -1619,10 +1619,10 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@teamsupercell/typings-for-css-modules-loader@^2.2.1":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@teamsupercell/typings-for-css-modules-loader/-/typings-for-css-modules-loader-2.3.0.tgz#7233d8440c798924e94d787d1d31118f77a1c0cf"
-  integrity sha512-K45LrX/QXd3npYy4cLuVbhYFEit3BrQjfJ66HybOAucolm1qdKimKz7vl2syj2x9saEoaywS24Qx38viZZoF0w==
+"@teamsupercell/typings-for-css-modules-loader@^2.5.1":
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/@teamsupercell/typings-for-css-modules-loader/-/typings-for-css-modules-loader-2.5.1.tgz#9a8c5f9667de5edbc18a5e5d4c1a5c38a09ca004"
+  integrity sha512-8Dz/2awNbkrFHf3IpF8YGUPniXAZW/z7OTiosO+xucIU1+jVg/cT4uyGZ7z9cmAsnExsxq4igazxwgGBXVpUgA==
   dependencies:
     camelcase "^5.3.1"
     loader-utils "1.2.3"
