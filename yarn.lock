@@ -5692,10 +5692,10 @@ electron-localshortcut@^3.1.0:
     keyboardevent-from-electron-accelerator "^2.0.0"
     keyboardevents-areequal "^0.2.1"
 
-electron-log@^4.2.4:
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-4.2.4.tgz#a13e42a9fc42ca2cc7d2603c3746352efa82112e"
-  integrity sha512-CXbDU+Iwi+TjKzugKZmTRIORIPe3uQRqgChUl19fkW/reFUn5WP7dt+cNGT3bkLV8xfPilpkPFv33HgtmLLewQ==
+electron-log@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-4.4.0.tgz#0f350004565bb246e58e7b4af0b320c9f7aef3e8"
+  integrity sha512-LOp3elm5mOAAoQmvK8ZOaD75m6DvybWNMkwd8ZtZm23bymbxI///bZ42r/XvqKgmFCnv32/L+fz0mkDE4DMA/g==
 
 electron-publish@22.8.0:
   version "22.8.0"
