@@ -277,7 +277,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.14.0",
     "@fullcalendar/daygrid": "^5.3.2",
-    "@fullcalendar/react": "^5.3.1",
+    "@fullcalendar/react": "^5.11.3",
     "@hot-loader/react-dom": "^16.13.0",
     "@reduxjs/toolkit": "^1.4.0",
     "connected-react-router": "^6.6.1",
